@@ -59,7 +59,8 @@ def main():
 
     # Load data from files into memory
     print("Loading data...")
-    load_data(directory)
+    #load_data(directory)
+    load_data("small")
     print("Data loaded.")
 
     source = person_id_for_name(input("Name: "))
@@ -93,7 +94,41 @@ def shortest_path(source, target):
     """
 
     # TODO
-    raise NotImplementedError
+    
+    start=Node(state=source,parent=None,action=None)
+    frontier=QueueFrontier()
+    frontier.add(start)
+    explored_actors=[]
+    while True:
+        if frontier.empty():
+            return None
+        
+        node=frontier.remove()
+        if node.state == target:
+            actions=[]
+            cells=[]
+            while node.parent is not None:
+                actions.append(node.action)
+                cells.append(node.state)
+                node=node.parent
+            actions.reverse()
+            cells.reverse()
+            sol=[]
+            for i in range(len(actions)):
+                sol.append((actions[i],cells[i]))
+            return sol
+        
+        explored_actors.append(node.state)
+        
+        neighbors=neighbors_for_person(node.state)
+        for movie,actor in neighbors:
+            if actor not in explored_actors and not frontier.contains_state(actor):
+                child=Node(state=actor,parent=node,action=movie)
+                frontier.add(child)
+                
+                
+            
+                
 
 
 def person_id_for_name(name):
